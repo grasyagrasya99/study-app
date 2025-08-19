@@ -1,15 +1,20 @@
 {
   "name": "Study App",
   "short_name": "Study",
-  "start_url": "./index.html",
+  "id": "study-app",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#58cc02",
+  "description": "A simple study app to help track learning progress.",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
     }
-  ]
+  ],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "navigate-existing"]
+  }
 }
