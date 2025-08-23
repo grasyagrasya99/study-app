@@ -12,10 +12,8 @@ button{margin:5px;padding:10px 15px;border-radius:12px;border:none;background:#5
 .card .front,.card .back{width:100%;height:100%;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;position:absolute;backface-visibility:hidden;}
 .card .front{background:#fff9c4;}
 .card .back{background:#b3e5fc;transform:rotateY(180deg);}
-.col{display:inline-block;width:45%;margin:5px;vertical-align:top;padding:5px;border-radius:12px;}
-#spanishCol{background:#fffde7;} /* soft yellow */
-#englishCol{background:#e1f5fe;} /* soft blue */
-.word-card{background:white;margin:5px;padding:15px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer;font-size:18px;}
+.col{display:inline-block;width:45%;margin:5px;vertical-align:top;}
+.word-card{background:white;margin:5px;padding:10px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer;}
 .word-card.selected{background:#58aaff;}
 .word-card.matched{background:#58cc02;color:white;}
 .word-card.wrong{background:#ff4d4d;color:white;}
@@ -24,11 +22,6 @@ button{margin:5px;padding:10px 15px;border-radius:12px;border:none;background:#5
 #wordList button{background:red;padding:2px 6px;border-radius:6px;}
 #confetti{position:fixed;top:0;left:0;pointer-events:none;}
 .hidden{display:none;}
-/* Mobile tap enhancements */
-@media (max-width:600px){
-  .word-card{padding:20px;font-size:20px;}
-  .card{width:260px;height:150px;}
-}
 </style>
 </head>
 <body>
@@ -187,6 +180,7 @@ function selectCard(card){
     selected.push(card);
     card.classList.add("selected");
   } else if(selected.length===1){
+    // Must select opposite column
     if(selected[0].dataset.lang===card.dataset.lang){
       selected[0].classList.remove("selected");
       selected=[card]; card.classList.add("selected"); return;
@@ -233,14 +227,5 @@ function launchConfetti(){
   animate();
 }
 </script>
-  <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then(() => console.log("Service Worker registered!"))
-      .catch((error) => console.log("Service Worker registration failed:", error));
-  }
-</script>
 </body>
 </html>
-
