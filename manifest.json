@@ -1,32 +1,21 @@
 {
   "name": "Study App",
   "short_name": "Study",
-  "id": "study-app",
-  "start_url": "/",
-  "scope": "/",
+  "description": "A fun study app with flashcards and matching games",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#ffffff",
-  "theme_color": "#58cc02",
-  "description": "A simple study app to help track learning progress.",
-  "dir": "ltr",
-  "lang": "en",
-  "categories": ["education"],
+  "theme_color": "#4CAF50",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
-    }
-  ],
-  "screenshots": [
+    },
     {
-      "src": "screenshot1.png",
-      "sizes": "540x720",
+      "src": "icon.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "launch_handler": {
-    "client_mode": ["focus-existing", "navigate-existing"]
-  }
+  ]
 }
