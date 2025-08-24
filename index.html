@@ -20,8 +20,8 @@ button{margin:5px;padding:10px 15px;border-radius:12px;border:none;background:#5
 .card .front,.card .back{width:100%;height:100%;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;position:absolute;backface-visibility:hidden;}
 .card .front{background:#fff9c4;}
 .card .back{background:#b3e5fc;transform:rotateY(180deg);}
-.col{display:inline-block;width:45%;margin:5px;vertical-align:top;}
-.word-card{background:white;margin:5px;padding:10px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer;}
+.col{display:flex;flex-direction:column;width:45%;margin:5px;gap:10px;}
+.word-card{background:white;margin:0;padding:20px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;min-height:60px;}
 .word-card.selected{background:#58aaff;}
 .word-card.matched{background:#58cc02;color:white;}
 .word-card.wrong{background:#ff4d4d;color:white;}
@@ -91,22 +91,22 @@ let localWordBank = JSON.parse(localStorage.getItem("wordBank")) || [
 let flashIndex=0, isFlipped=false, selected=[], sheetEnabled=false;
 
 // UI
-function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); }
-function backToMenu(){hideAll();document.getElementById("menu").classList.add("active"); }
-function showWordBank(){hideAll();document.getElementById("wordBankScreen").classList.add("active"); renderWordBank(); }
-function startFlashcards(){hideAll();document.getElementById("flashcardsScreen").classList.add("active"); nextFlashcard(); }
-function startMatching(){hideAll();document.getElementById("matchingScreen").classList.add("active"); }
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));}
+function backToMenu(){hideAll();document.getElementById("menu").classList.add("active");}
+function showWordBank(){hideAll();document.getElementById("wordBankScreen").classList.add("active"); renderWordBank();}
+function startFlashcards(){hideAll();document.getElementById("flashcardsScreen").classList.add("active"); nextFlashcard();}
+function startMatching(){hideAll();document.getElementById("matchingScreen").classList.add("active");}
 
 // Google Sheets
-function toggleSheet(){sheetEnabled=document.getElementById("sheetToggle").checked; if(sheetEnabled) fetchSheet(); }
+function toggleSheet(){sheetEnabled=document.getElementById("sheetToggle").checked; if(sheetEnabled) fetchSheet();}
 function fetchSheet(){
   const url=document.getElementById("sheetUrl").value.trim();
   if(!url) return alert("Paste your Google Sheets CSV URL!");
   fetch(url).then(res=>res.text()).then(csv=>{
     const lines=csv.split("\n");
     let newWords=[];
-    lines.forEach(l=>{const [sp,en]=l.split(","); if(sp && en) newWords.push({spanish:sp.trim(),english:en.trim()}); });
-    if(newWords.length>0){localWordBank=newWords; saveBank(); renderWordBank(); alert("Words synced!"); }
+    lines.forEach(l=>{const [sp,en]=l.split(","); if(sp && en) newWords.push({spanish:sp.trim(),english:en.trim()});});
+    if(newWords.length>0){localWordBank=newWords; saveBank(); renderWordBank(); alert("Words synced!");}
   }).catch(err=>alert("Error fetching CSV"));
 }
 
@@ -118,7 +118,7 @@ function renderWordBank(){
     li.textContent=`${w.spanish} – ${w.english}`;
     const del=document.createElement("button");
     del.textContent="❌";
-    del.onclick=()=>{if(confirm("Delete this word?")){localWordBank.splice(i,1); saveBank(); renderWordBank(); }};
+    del.onclick=()=>{if(confirm("Delete this word?")){localWordBank.splice(i,1);saveBank();renderWordBank();}};
     li.appendChild(del); list.appendChild(li);
   });
 }
@@ -129,7 +129,7 @@ function addWord(){
     document.getElementById("spanishInput").value=""; document.getElementById("englishInput").value="";
   }
 }
-function saveBank(){localStorage.setItem("wordBank",JSON.stringify(localWordBank)); }
+function saveBank(){localStorage.setItem("wordBank",JSON.stringify(localWordBank));}
 
 // Flashcards
 function nextFlashcard(){
@@ -140,7 +140,7 @@ function nextFlashcard(){
   card.querySelector(".back").textContent=localWordBank[flashIndex].english;
   card.style.transform="rotateY(0)"; isFlipped=false;
 }
-function flipFlashcard(){const card=document.getElementById("flashcard"); isFlipped=!isFlipped; card.style.transform=isFlipped?"rotateY(180deg)":"rotateY(0)"; }
+function flipFlashcard(){const card=document.getElementById("flashcard"); isFlipped=!isFlipped; card.style.transform=isFlipped?"rotateY(180deg)":"rotateY(0)";}
 
 // Matching Game
 function initMatchGame(){
@@ -155,6 +155,11 @@ function newMatchRound(){
   const enCol=document.getElementById("englishCol");
   spCol.innerHTML=""; enCol.innerHTML="";
   document.getElementById("winMessage").classList.add("hidden");
+
+  // Clear confetti
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
   let pool=[...localWordBank];
   if(pool.length<5) pool=pool.concat(pool);
@@ -188,7 +193,6 @@ function selectCard(card){
     selected.push(card);
     card.classList.add("selected");
   } else if(selected.length===1){
-    // Must select opposite column
     if(selected[0].dataset.lang===card.dataset.lang){
       selected[0].classList.remove("selected");
       selected=[card]; card.classList.add("selected"); return;
@@ -197,14 +201,14 @@ function selectCard(card){
     card.classList.add("selected"); selected.push(card);
 
     if(selected[0].dataset.match===selected[1].dataset.match){
-      selected.forEach(c=>{c.classList.remove("selected"); c.classList.add("matched"); });
-      navigator.vibrate?.(200); // ✅ vibrate on successful match
-      playSuccess();   // 🔊 success sound
+      selected.forEach(c=>{c.classList.remove("selected"); c.classList.add("matched");});
+      navigator.vibrate?.(200); // ✅ Vibrate only on successful match
+      playSuccess();
       selected=[];
       checkWin();
     } else {
       selected.forEach(c=>c.classList.add("wrong"));
-      setTimeout(()=>{selected.forEach(c=>c.classList.remove("wrong","selected")); selected=[]; },400);
+      setTimeout(()=>{selected.forEach(c=>c.classList.remove("wrong","selected")); selected=[];},400);
     }
   }
 }
@@ -215,13 +219,20 @@ function checkWin(){
   if(all.length===matched.length){
     document.getElementById("winMessage").classList.remove("hidden"); 
     launchConfetti();
-    playComplete();  // 🔊 complete sound
+    playComplete();
     setTimeout(()=>{ newMatchRound(); },1500);
   }
 }
 
-function playSuccess(){ const audio=new Audio("success.mp3"); audio.play(); }
-function playComplete(){ const audio=new Audio("complete.mp3"); audio.play(); }
+function playSuccess() {
+  const audio = new Audio("success.mp3");
+  audio.play();
+}
+
+function playComplete() {
+  const audio = new Audio("complete.mp3");
+  audio.play();
+}
 
 // Confetti
 function launchConfetti(){
@@ -234,18 +245,25 @@ function launchConfetti(){
   let duration=1000,start=Date.now();
   function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    particles.forEach(p=>{ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,4,4); p.x+=p.dx; p.y+=p.dy; });
+    particles.forEach(p=>{ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,4,4); p.x+=p.dx; p.y+=p.dy;});
     if(Date.now()-start<duration) requestAnimationFrame(animate);
   }
   animate();
 }
 
-// Service Worker
-if("serviceWorker" in navigator){
-  window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("/sw.js")
-    .then(reg=>console.log("Service Worker registered:", reg.scope))
-    .catch(err=>console.log("Service Worker registration failed:", err));
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((registration) => {
+        console.log("Service Worker registered with scope:", registration.scope);
+      })
+      .catch((error) => {
+        console.log("Service Worker registration failed:", error);
+      });
   });
 }
 </script>
