@@ -1,17 +1,11 @@
 {
   "name": "Study App",
-  "short_name": "Study",
-  "description": "A fun study app with flashcards and matching games",
-  "start_url": "./index.html",
+  "short_name": "StudyApp",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "icons": [
-    {
-      "src": "favicon.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
     {
       "src": "icon-192.png",
       "sizes": "192x192",
